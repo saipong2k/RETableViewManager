@@ -28,18 +28,19 @@
 
 @implementation REMultipleChoiceItem
 
-+ (instancetype)itemWithTitle:(NSString *)title value:(NSArray *)value selectionHandler:(void(^)(REMultipleChoiceItem *item))selectionHandler
++ (instancetype)itemWithTitle:(NSString *)title selectedHint:(NSString *)selectedHint value:(NSArray *)value selectionHandler:(void(^)(REMultipleChoiceItem *item))selectionHandler
 {
-    return [[self alloc] initWithTitle:title value:value selectionHandler:selectionHandler];
+    return [[self alloc] initWithTitle:title selectedHint:(NSString *)selectedHint value:value selectionHandler:selectionHandler];
 }
 
-- (id)initWithTitle:(NSString *)title value:(NSArray *)value selectionHandler:(void(^)(REMultipleChoiceItem *item))selectionHandler
+- (id)initWithTitle:(NSString *)title selectedHint:(NSString *)selectedHint value:(NSArray *)value selectionHandler:(void(^)(REMultipleChoiceItem *item))selectionHandler
 {
     self = [super init];
     if (!self)
         return nil;
     
     self.title = title;
+    self.selectedHint = selectedHint;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     self.selectionHandler = ^(REMultipleChoiceItem *item) {
         [item.section.tableViewManager.tableView endEditing:YES];
@@ -63,7 +64,7 @@
         self.detailLabelText = [value objectAtIndex:0];
     
     if (value.count > 1)
-        self.detailLabelText = [NSString stringWithFormat:NSLocalizedString(@"%i selected", @"%i selected"), value.count];
+        self.detailLabelText = [NSString stringWithFormat:self.selectedHint, value.count];
 }
 
 #pragma mark -
