@@ -135,7 +135,7 @@
         
         // Present options controller
         //
-        RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^(RETableViewItem *selectedItem){
+      RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO selectAllOption:@"Option 1" completionHandler:^(RETableViewItem *selectedItem){
             [weakSelf.navigationController popViewControllerAnimated:YES];
             
             [item reloadRowWithAnimation:UITableViewRowAnimationNone]; // same as [weakSelf.tableView reloadRowsAtIndexPaths:@[item.indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -155,7 +155,7 @@
         [weakSelf.navigationController pushViewController:optionsController animated:YES];
     }];
     
-    self.multipleChoiceItem = [REMultipleChoiceItem itemWithTitle:@"Multiple" value:@[@"Option 2", @"Option 4"] selectionHandler:^(REMultipleChoiceItem *item) {
+  self.multipleChoiceItem = [REMultipleChoiceItem itemWithTitle:@"Multiple" selectedHint:@"%i selected" value:@[@"Option 2", @"Option 4"] selectionHandler:^(REMultipleChoiceItem *item) {
         [item deselectRowAnimated:YES];
         
         // Generate sample options
@@ -166,7 +166,7 @@
         
         // Present options controller
         //
-        RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:YES completionHandler:^(RETableViewItem *selectedItem){
+        RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:YES selectAllOption:@"Option 1" completionHandler:^(RETableViewItem *selectedItem){
             [item reloadRowWithAnimation:UITableViewRowAnimationNone];
             NSLog(@"parent: %@, child: %@", item.value, selectedItem.title);
         }];

@@ -30,6 +30,7 @@
 
 @property (weak, readwrite, nonatomic) RETableViewItem *item;
 @property (strong, readwrite, nonatomic) NSArray *options;
+@property (strong, readwrite, nonatomic) NSString *selectAllOption;
 @property (strong, readonly, nonatomic) RETableViewManager *tableViewManager;
 @property (strong, readonly, nonatomic) RETableViewSection *mainSection;
 @property (assign, readwrite, nonatomic) BOOL multipleChoice;
@@ -37,6 +38,6 @@
 @property (strong, readwrite, nonatomic) RETableViewCellStyle *style;
 @property (weak, readwrite, nonatomic) id<RETableViewManagerDelegate> delegate;
 
-- (id)initWithItem:(RETableViewItem *)item options:(NSArray *)options multipleChoice:(BOOL)multipleChoice completionHandler:(void(^)(RETableViewItem *item))completionHandler;
+- (id)initWithItem:(RETableViewItem *)item options:(NSArray *)options multipleChoice:(BOOL)multipleChoice selectAllOption:(NSString*)selectAllOption completionHandler:(void(^)(RETableViewItem *item))completionHandler;
 
 @end

@@ -35,7 +35,7 @@
 
 @implementation RETableViewOptionsController
 
-- (id)initWithItem:(RETableViewItem *)item options:(NSArray *)options multipleChoice:(BOOL)multipleChoice completionHandler:(void(^)(RETableViewItem *item))completionHandler
+- (id)initWithItem:(RETableViewItem *)item options:(NSArray *)options multipleChoice:(BOOL)multipleChoice selectAllOption:(NSString*)selectAllOption completionHandler:(void(^)(RETableViewItem *item))completionHandler
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (!self)
@@ -45,6 +45,7 @@
     self.options = options;
     self.title = item.title;
     self.multipleChoice = multipleChoice;
+    self.selectAllOption = selectAllOption;
     self.completionHandler = completionHandler;
     
     return self;
@@ -107,21 +108,75 @@
                 REMultipleChoiceItem * __weak item = (REMultipleChoiceItem *)weakSelf.item;
                 [weakSelf.tableView deselectRowAtIndexPath:selectedItem.indexPath animated:YES];
                 if (selectedItem.accessoryType == UITableViewCellAccessoryCheckmark) {
-                    selectedItem.accessoryType = UITableViewCellAccessoryNone;
-                    cell.accessoryType = UITableViewCellAccessoryNone;
-                    NSMutableArray *items = [[NSMutableArray alloc] init];
-                    for (NSString *val in item.value) {
-                        if (![val isEqualToString:selectedItem.title])
-                            [items addObject:val];
+                    if ([selectedItem.title isEqualToString:self.selectAllOption]) {
+                      NSMutableArray *items = [[NSMutableArray alloc] init];
+                      for (NSIndexPath *indexPath in [weakSelf.tableView indexPathsForVisibleRows]) {
+                        UITableViewCell *cell = [weakSelf.tableView cellForRowAtIndexPath:indexPath];
+                        cell.accessoryType = UITableViewCellAccessoryNone;
+                      }
+                      for (RETableViewItem *item in weakSelf.mainSection.items) {
+                        item.accessoryType = UITableViewCellAccessoryNone;
+                        if ([item.title isEqualToString:self.selectAllOption]) {
+                          [items addObject:item.title];
+                        }
+                      }
+                      item.value = items;
+                    } else {
+                      NSMutableArray *items = [[NSMutableArray alloc] init];
+                      for (NSIndexPath *indexPath in [weakSelf.tableView indexPathsForVisibleRows]) {
+                        UITableViewCell *cell = [weakSelf.tableView cellForRowAtIndexPath:indexPath];
+                        if ([cell.textLabel.text isEqualToString:self.selectAllOption]) {
+                          cell.accessoryType = UITableViewCellAccessoryNone;
+                        }
+                      }
+                      for (RETableViewItem *item in weakSelf.mainSection.items) {
+                        if ([item.title isEqualToString:self.selectAllOption]) {
+                          item.accessoryType = UITableViewCellAccessoryNone;
+                          [items removeObject:item.title];
+                        }
+                      }
+                      selectedItem.accessoryType = UITableViewCellAccessoryNone;
+                      cell.accessoryType = UITableViewCellAccessoryNone;
+
+                      for (NSString *val in item.value) {
+                          if (![val isEqualToString:selectedItem.title])
+                              [items addObject:val];
+                      }
+                      item.value = items;
                     }
-                    
-                    item.value = items;
                 } else {
-                    selectedItem.accessoryType = UITableViewCellAccessoryCheckmark;
-                    cell.accessoryType = UITableViewCellAccessoryCheckmark;
-                    NSMutableArray *items = [[NSMutableArray alloc] initWithArray:item.value];
-                    [items addObject:selectedItem.title];
-                    item.value = items;
+                    if ([selectedItem.title isEqualToString:self.selectAllOption]) {
+                      NSMutableArray *items = [[NSMutableArray alloc] init];
+                      for (NSIndexPath *indexPath in [weakSelf.tableView indexPathsForVisibleRows]) {
+                          UITableViewCell *cell = [weakSelf.tableView cellForRowAtIndexPath:indexPath];
+                          cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                      }
+                      for (RETableViewItem *item in weakSelf.mainSection.items) {
+                          item.accessoryType = UITableViewCellAccessoryCheckmark;
+                          if (![item.title isEqualToString:self.selectAllOption]) {
+                            [items addObject:item.title];
+                          }
+                      }
+                      item.value = items;
+                    } else {
+                      NSMutableArray *items = [[NSMutableArray alloc] initWithArray:item.value];
+                      for (NSIndexPath *indexPath in [weakSelf.tableView indexPathsForVisibleRows]) {
+                        UITableViewCell *cell = [weakSelf.tableView cellForRowAtIndexPath:indexPath];
+                        if ([cell.textLabel.text isEqualToString:self.selectAllOption]) {
+                          cell.accessoryType = UITableViewCellAccessoryNone;
+                        }
+                      }
+                      for (RETableViewItem *item in weakSelf.mainSection.items) {
+                        if ([item.title isEqualToString:self.selectAllOption]) {
+                          item.accessoryType = UITableViewCellAccessoryNone;
+                          [items removeObject:item.title];
+                        }
+                      }
+                      selectedItem.accessoryType = UITableViewCellAccessoryCheckmark;
+                      cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                      [items addObject:selectedItem.title];
+                      item.value = items;
+                    }
                     refreshItems();
                 }
                 if (weakSelf.completionHandler)
