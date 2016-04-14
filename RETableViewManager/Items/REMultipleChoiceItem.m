@@ -57,14 +57,11 @@
 {
     _value = value;
     
-    if (value.count == 0)
-        self.detailLabelText = @"";
-    
-    if (value.count == 1)
-        self.detailLabelText = [value objectAtIndex:0];
-    
-    if (value.count > 1)
-        self.detailLabelText = [NSString stringWithFormat:self.selectedHint, value.count];
+     if (value.count == 0)
+         self.detailLabelText = @"";
+     
+     if (value.count >= 1)
+         self.detailLabelText = [NSString stringWithFormat:self.selectedHint, value.count];
 }
 
 #pragma mark -
