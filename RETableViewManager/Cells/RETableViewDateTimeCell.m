@@ -159,6 +159,7 @@
             [self.section removeItemAtIndex:self.item.inlinePickerItem.indexPath.row];
             self.item.inlinePickerItem = nil;
             [self.tableViewManager.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableViewManager.tableView reloadData];
         }
     }
 }
